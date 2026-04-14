@@ -20,7 +20,7 @@ from aiogram.types import (
 import sqlite3
 import pandas as pd
 from datetime import datetime
-
+import html
 # Load environment variables
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -157,17 +157,17 @@ async def process_position(message: Message, state: FSMContext):
 
     # Notify Admin if ADMIN_CHAT_ID is set
     admin_notification = (
-        "🚛 **New Applicant!**\n\n"
-        f"**Name:** {name}\n"
-        f"**Phone:** {phone}\n"
-        f"**Position:** {position}\n"
-        f"**Telegram User:** {username} (ID: {message.from_user.id})"
+        "🚛 <b>New Applicant!</b>\n\n"
+        f"<b>Name:</b> {html.escape(str(name))}\n"
+        f"<b>Phone:</b> {html.escape(str(phone))}\n"
+        f"<b>Position:</b> {html.escape(str(position))}\n"
+        f"<b>Telegram User:</b> {html.escape(str(username))} (ID: {message.from_user.id})"
     )
     
     if ADMIN_CHAT_ID and ADMIN_CHAT_ID != "your_admin_chat_id_here":
         try:
             bot = message.bot
-            await bot.send_message(chat_id=ADMIN_CHAT_ID, text=admin_notification, parse_mode="Markdown")
+            await bot.send_message(chat_id=ADMIN_CHAT_ID, text=admin_notification, parse_mode="HTML")
         except Exception as e:
             logging.error(f"Failed to send application to admin: {e}")
     else:
